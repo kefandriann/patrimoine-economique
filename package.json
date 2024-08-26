@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "chai": "^5.1.1",
+    "express": "^4.19.2",
     "mocha": "^10.7.0"
   }
 }
