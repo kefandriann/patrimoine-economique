@@ -17,9 +17,9 @@ export default class Possession {
       return 0;
     }
     const differenceDate = {
-      year: dateActuelle.getFullYear() - this.dateDebut.getFullYear(),
-      month: dateActuelle.getMonth() - this.dateDebut.getMonth(),
-      day: dateActuelle.getDate() - this.dateDebut.getDate(),
+      year: dateActuelle.split("-")[0] - this.dateDebut.split("-")[0],
+      month: dateActuelle.split("-")[1] - this.dateDebut.split("-")[1],
+      day: dateActuelle.split("-")[2] - this.dateDebut.split("-")[2],
     };
   
     var raison = differenceDate.year + differenceDate.month / 12 + differenceDate.day / 365;

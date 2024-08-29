@@ -1,7 +1,7 @@
 export default class Patrimoine {
   constructor(possesseur, possessions) {
     this.possesseur = possesseur;
-    this.possessions = [...possessions]; // [Possession, Possession, ...]
+    this.possessions = possessions; // [Possession1, Possession2, ...]
   }
   getValeur(date) {
     let result = 0;

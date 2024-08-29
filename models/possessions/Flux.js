@@ -6,7 +6,7 @@ import Possession from "./Possession.js";
 export default class Flux extends Possession {
   // Si salaire => +
   // Si train de vie => -
-  constructor(possesseur, libelle, valeur, dateDebut, dateFin, tauxAmortissement, jour) {
+  constructor(possesseur, libelle, valeur, dateDebut, dateFin, tauxAmortissement, jour, valeurConstante) {
     super(possesseur, libelle, valeur, dateDebut, dateFin, tauxAmortissement)
     this.valeur = 0;
     this.jour = jour;
@@ -14,7 +14,7 @@ export default class Flux extends Possession {
     // this.destination = destination; // Compte
     this.dateDebut = dateDebut;
     this.dateFin = dateFin;
-    this.valeurConstante = valeur
+    this.valeurConstante = valeurConstante;
   }
 
 
@@ -22,15 +22,15 @@ export default class Flux extends Possession {
     const nombreDeMois = (debut, dateEvaluation, jourJ) => {
       let compteur = 0;
 
-      if (debut.getDate() < jourJ) {
+      if (debut.split("-")[2] < jourJ) {
         compteur++;
       }
 
-      if (dateEvaluation.getDate() >= jourJ && !(debut.getFullYear() === dateEvaluation.getFullYear() && debut.getMonth() === dateEvaluation.getMonth())) {
+      if (dateEvaluation.split("-")[2] >= jourJ && !(debut.split("-")[0] === dateEvaluation.split("-")[0] && debut.split("-")[1] === dateEvaluation.split("-")[1])) {
         compteur++;
       }
 
-      let totalMois = (dateEvaluation.getFullYear() - debut.getFullYear()) * 12 + (dateEvaluation.getMonth() - debut.getMonth()) - 1;
+      let totalMois = (dateEvaluation.split("-")[0] - debut.split("-")[0]) * 12 + (dateEvaluation.split("-")[1] - debut.split("-")[1]) - 1;
 
       compteur += Math.max(0, totalMois);
 
