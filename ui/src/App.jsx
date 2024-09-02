@@ -8,16 +8,17 @@ import UpdatePossessionPage from './components/UpdatePossessionPage';
 function App  ()  {
   const [page, setPage] = useState('possession');
   const [libelle1, setLibelle1] = useState('');
+  const [possessions, setPossessions] = useState([]);
 
   function renderPage () {
     if (page === 'patrimoine'){
       return <PatrimoinePage />;
     } else if (page === 'possession') {
-      return <PossessionListPage setPage={setPage} setLibelle1={setLibelle1}/>;
+      return <PossessionListPage setPage={setPage} setLibelle1={setLibelle1} possessions={possessions} setPossessions={setPossessions}/>;
     } else if (page === 'create') {
-      return <CreatePossessionPage />;
+      return <CreatePossessionPage setPossessions={setPossessions}/>;
     } else if (page.split("/")[0] === 'update') {
-      return <UpdatePossessionPage libelle1={libelle1}/>;
+      return <UpdatePossessionPage libelle1={libelle1} setPossessions={setPossessions}/>;
     }
     return <h1>Bienvenue dans l'application Patrimoine Économique</h1>;
   }

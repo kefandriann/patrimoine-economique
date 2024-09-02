@@ -5,8 +5,7 @@ import axios from 'axios';
 axios.defaults.baseURL = 'http://localhost:3000';
 
 function PossessionListPage (props) {
-  const { setPage , setLibelle1 } = props;
-  const [possessions, setPossessions] = useState([]);
+  const { setPage , setLibelle1 , possessions , setPossessions} = props;
 
   useEffect(() => {
     const fetchPossessions = async () => {

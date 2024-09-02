@@ -1,18 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 
-const CreatePossessionPage = () => {
+const CreatePossessionPage = ({setPossessions}) => {
   const [libelle, setLibelle] = useState('');
   const [valeur, setValeur] = useState('');
   const [dateDebut, setDateDebut] = useState('');
   const [tauxAmortissement, setTauxAmortissement] = useState('');
+
+  const fetchPossessions = async () => {
+    try {
+      const response = await axios.get('/possession');
+      setPossessions(response.data);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des possessions:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPossessions();
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       if (libelle != '' && valeur != '' && dateDebut != '' && tauxAmortissement != ''){
         console.log(await axios.post('/possession', { libelle, valeur, dateDebut, tauxAmortissement }));
+        fetchPossessions();
       }
     } catch (err) {
       console.error("Erreur lors de la création de la possession", err);

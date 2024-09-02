@@ -4,47 +4,41 @@ import cors from "cors";
 import Patrimoine from "../models/Patrimoine.js";
 import Possession from "../models/possessions/Possession.js";
 import Flux from "../models/possessions/Flux.js";
-import fs from 'fs';
 
 const app = express();
 const port = 3000;
 app.use(express.json());
 app.use(cors());
 
-const file = await readFile("../data/data.json");
-const data = file.data; //data.json
-const tempData = data;
-const possessionsList = (await readFile("../data/data.json")).data[1].data.possessions;
-const patrimoine = (await readFile("../data/data.json")).data[1].data;
-
-const instancedPossession = possessionsList.map( e => {
-    if (!(e.libelle === "Alternance" || e.libelle ==="Survie")){
-        return new Possession(
-            e.possesseur,
-            e.libelle,
-            e.valeur,
-            e.dateDebut,
-            e.dateFin,
-            e.tauxAmortissement
-        );
-    } else {
-        return new Flux(
-            e.possesseur,
-            e.libelle,
-            e.valeur,
-            e.dateDebut,
-            e.dateFin,
-            e.tauxAmortissement,
-            e.jour,
-            e.valeurConstante
-        );
-    }
-});
-
-const instancedPatrimoine = new Patrimoine(patrimoine.possesseur, instancedPossession);
-
 // /possession : Get Possession List
-app.get("/possession", (req, res) => {
+app.get("/possession", async (req, res) => {
+    const file = await readFile("../data/data.json");
+    const data = file.data;
+    const tempData = data;
+
+    const instancedPossession = tempData[1].data.possessions.map( e => {
+        if (!(e.libelle === "Alternance" || e.libelle ==="Survie")){
+            return new Possession(
+                e.possesseur,
+                e.libelle,
+                e.valeur,
+                e.dateDebut,
+                e.dateFin,
+                e.tauxAmortissement
+            );
+        } else {
+            return new Flux(
+                e.possesseur,
+                e.libelle,
+                e.valeur,
+                e.dateDebut,
+                e.dateFin,
+                e.tauxAmortissement,
+                e.jour,
+                e.valeurConstante
+            );
+        }
+    });
     const valeurActuelle = instancedPossession.map(e => e.getValeur(new Date().toISOString().split("T")[0]))
     
     for (let i=0; i<instancedPossession.length; i++){
@@ -55,7 +49,11 @@ app.get("/possession", (req, res) => {
 })
 
 // /possession : Create Possession: [libelle, valeur, dateDebut, taux]
-app.post("/possession", (req, res) => {
+app.post("/possession", async (req, res) => {
+    const file = await readFile("../data/data.json");
+    const data = file.data;
+    const tempData = data;
+
     const {libelle,valeur,dateDebut,tauxAmortissement} = req.body;
     const newPossession = {
         possesseur: { "nom": "John Doe" },
@@ -74,7 +72,11 @@ app.post("/possession", (req, res) => {
 })
 
 // /possession/:libelle: Update Possession by libelle: [libelle, dateFin]
-app.patch("/possession/:libelle", (async(req, res) => {
+app.patch("/possession/:libelle", async (req, res) => {
+    const file = await readFile("../data/data.json");
+    const data = file.data;
+    const tempData = data;
+    
     const libelleParam = req.params.libelle;
     const { libelle, dateFin } = req.body;
 
@@ -89,10 +91,14 @@ app.patch("/possession/:libelle", (async(req, res) => {
 
     res.json("Update success");
     
-}))
+})
 
 // /possession/:libelle/close: Close Possession => set dateFin to current Date
-app.put("/possession/:libelle/close", (async(req, res) => {
+app.put("/possession/:libelle/close", async (req, res) => {
+    const file = await readFile("../data/data.json");
+    const data = file.data;
+    const tempData = data;
+    
     const libelleParam = req.params.libelle;
 
     for (let i=0; i<tempData[1].data.possessions.length; i++){
@@ -104,9 +110,37 @@ app.put("/possession/:libelle/close", (async(req, res) => {
     writeFile('../data/data.json', tempData);
 
     res.json("Close success");
-}))
+})
 
 app.get("/patrimoine/:date", (async (req, res) => {
+    const file = await readFile("../data/data.json");
+    const data = file.data;
+    const tempData = data;
+    const instancedPossession = tempData[1].data.possessions.map( e => {
+        if (!(e.libelle === "Alternance" || e.libelle ==="Survie")){
+            return new Possession(
+                e.possesseur,
+                e.libelle,
+                e.valeur,
+                e.dateDebut,
+                e.dateFin,
+                e.tauxAmortissement
+            );
+        } else {
+            return new Flux(
+                e.possesseur,
+                e.libelle,
+                e.valeur,
+                e.dateDebut,
+                e.dateFin,
+                e.tauxAmortissement,
+                e.jour,
+                e.valeurConstante
+            );
+        }
+    });
+    const instancedPatrimoine = new Patrimoine(tempData[1].data.possesseur, instancedPossession)
+    
     const date = req.params.date;
     // /patrimoine/range: { type: 'month' , dateDebut: xxx , dateFin: xxx , jour: xx } Get Valeur Patrimoine Range: [DateDebut, DateFin, Jour, type] => Valeur Patrimoine between dateDebut - dateFin by type=month
     if (date === "range") {
