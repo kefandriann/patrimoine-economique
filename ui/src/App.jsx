@@ -6,7 +6,7 @@ import CreatePossessionPage from './components/CreatePossessionPage';
 import UpdatePossessionPage from './components/UpdatePossessionPage';
 
 function App  ()  {
-  const [page, setPage] = useState('patrimoine');
+  const [page, setPage] = useState('possession');
   const [libelle1, setLibelle1] = useState('');
 
   function renderPage () {

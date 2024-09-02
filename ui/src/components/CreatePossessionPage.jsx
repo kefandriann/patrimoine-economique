@@ -12,7 +12,7 @@ const CreatePossessionPage = () => {
     event.preventDefault();
     try {
       if (libelle != '' && valeur != '' && dateDebut != '' && tauxAmortissement != ''){
-        await axios.post('/possession', { libelle, valeur, dateDebut, tauxAmortissement });
+        console.log(await axios.post('/possession', { libelle, valeur, dateDebut, tauxAmortissement }));
       }
     } catch (err) {
       console.error("Erreur lors de la création de la possession", err);

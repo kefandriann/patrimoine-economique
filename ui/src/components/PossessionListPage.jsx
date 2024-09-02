@@ -10,12 +10,8 @@ function PossessionListPage (props) {
 
   useEffect(() => {
     const fetchPossessions = async () => {
-      try {
         const response = await axios.get('/possession');
         setPossessions(response.data);
-      } catch (err) {
-        console.error("Erreur lors de la récupération des possessions", err);
-      }
     };
 
     fetchPossessions();

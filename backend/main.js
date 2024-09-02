@@ -4,13 +4,16 @@ import cors from "cors";
 import Patrimoine from "../models/Patrimoine.js";
 import Possession from "../models/possessions/Possession.js";
 import Flux from "../models/possessions/Flux.js";
+import fs from 'fs';
 
 const app = express();
 const port = 3000;
 app.use(express.json());
 app.use(cors());
 
-const data = await readFile("../data/data.json").data;
+const file = await readFile("../data/data.json");
+const data = file.data; //data.json
+const tempData = data;
 const possessionsList = (await readFile("../data/data.json")).data[1].data.possessions;
 const patrimoine = (await readFile("../data/data.json")).data[1].data;
 
@@ -41,66 +44,66 @@ const instancedPossession = possessionsList.map( e => {
 const instancedPatrimoine = new Patrimoine(patrimoine.possesseur, instancedPossession);
 
 // /possession : Get Possession List
-app.get("/possession", (async(req, res) => {
-
-    const valeurActuelle = instancedPossession.map(e => e.getValeur(new Date().toISOString().split("T")[0]).toFixed(2))
-
-    let response = [];
-
-    for (let i = 0; i<valeurActuelle.length; i++){
-        let prop = possessionsList[i];
-        prop.valeurActuelle = valeurActuelle[i];
-        response.push(prop);
+app.get("/possession", (req, res) => {
+    const valeurActuelle = instancedPossession.map(e => e.getValeur(new Date().toISOString().split("T")[0]))
+    
+    for (let i=0; i<instancedPossession.length; i++){
+        instancedPossession[i].valeurActuelle = valeurActuelle[i].toFixed(2);
     }
 
-    res.json(response);
-}))
+    res.json(instancedPossession);
+})
 
 // /possession : Create Possession: [libelle, valeur, dateDebut, taux]
-app.post("/possession", (async(req, res) => {
-    const { libelle , valeur , dateDebut , tauxAmortissement } = await req.body;
-    const newPossession = { possesseur: { nom: "John Doe"}, libelle, valeur, dateDebut, dateFin: null, tauxAmortissement};
-    const newInstancedPossession = new Possession(
-        newPossession.possesseur,
-        newPossession.libelle,
-        newPossession.valeur,
-        newPossession.dateDebut,
-        newPossession.dateFin,
-        newPossession.tauxAmortissement
-    );
-    const newPossVal = newInstancedPossession.getValeur(new Date().toISOString().split("T")[0]).toFixed(2);
-    newPossession.valeurActuelle = newPossVal;
-    possessionsList.push(newPossession);
+app.post("/possession", (req, res) => {
+    const {libelle,valeur,dateDebut,tauxAmortissement} = req.body;
+    const newPossession = {
+        possesseur: { "nom": "John Doe" },
+        libelle: libelle,
+        valeur: +valeur,
+        dateDebut: dateDebut,
+        dateFin: null,
+        tauxAmortissement: +tauxAmortissement
+    }
 
-    res.status(201).json(newPossession);
-}))
+    tempData[1].data.possessions.push(newPossession);
+
+    writeFile('../data/data.json', tempData);
+
+    res.json(tempData);
+})
 
 // /possession/:libelle: Update Possession by libelle: [libelle, dateFin]
 app.patch("/possession/:libelle", (async(req, res) => {
-    const libelle1 = req.params.libelle;
-    const { libelle , dateFin } = req.body;
-    const possession = possessionsList.find(e => e.libelle === libelle1);
-    if (possession){
-        possession.libelle = libelle;
-        possession.dateFin = dateFin;
+    const libelleParam = req.params.libelle;
+    const { libelle, dateFin } = req.body;
 
-        res.json(possession);
-    } else {
-        res.status(404).json({ message: 'Possession not found' });
+    for (let i=0; i<tempData[1].data.possessions.length; i++){
+        if (tempData[1].data.possessions[i].libelle === libelleParam) {
+            tempData[1].data.possessions[i].libelle = libelle;
+            tempData[1].data.possessions[i].dateFin = dateFin;
+        }
     }
+
+    writeFile('../data/data.json', tempData);
+
+    res.json("Update success");
+    
 }))
 
 // /possession/:libelle/close: Close Possession => set dateFin to current Date
 app.put("/possession/:libelle/close", (async(req, res) => {
-    const libelle = req.params.libelle;
-    const possession = possessionsList.find(e => e.libelle === libelle);
-    if (possession){
-        possession.dateFin = new Date().toISOString().split("T")[0];
+    const libelleParam = req.params.libelle;
 
-        res.json(possession);
-    } else {
-        res.status(404).json({ message: 'Possession not found' });
+    for (let i=0; i<tempData[1].data.possessions.length; i++){
+        if (tempData[1].data.possessions[i].libelle === libelleParam) {
+            tempData[1].data.possessions[i].dateFin = new Date().toISOString().split("T")[0];
+        }
     }
+
+    writeFile('../data/data.json', tempData);
+
+    res.json("Close success");
 }))
 
 app.get("/patrimoine/:date", (async (req, res) => {
