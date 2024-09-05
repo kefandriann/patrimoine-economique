@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button } from 'react-bootstrap';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://localhost:3000';
+axios.defaults.baseURL = 'https://patrimoine-economique-backend-6r4w.onrender.com';
+const apiUrl = process.env.REACT_APP_BACKEND_URL;
 
 function PossessionListPage (props) {
   const { setPage , setLibelle1 , possessions , setPossessions} = props;
