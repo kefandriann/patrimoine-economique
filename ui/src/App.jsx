@@ -16,7 +16,7 @@ function App  ()  {
     } else if (page === 'possession') {
       return <PossessionListPage setPage={setPage} setLibelle1={setLibelle1} possessions={possessions} setPossessions={setPossessions}/>;
     } else if (page === 'create') {
-      return <CreatePossessionPage setPossessions={setPossessions}/>;
+      return <CreatePossessionPage setPossessions={setPossessions} setPage={setPage}/>;
     } else if (page.split("/")[0] === 'update') {
       return <UpdatePossessionPage libelle1={libelle1} setPossessions={setPossessions}/>;
     }

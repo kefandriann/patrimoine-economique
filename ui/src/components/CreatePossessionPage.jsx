@@ -4,7 +4,7 @@ import axios from 'axios';
 
 axios.defaults.baseURL = 'https://patrimoine-economique-backend-6r4w.onrender.com';
 
-const CreatePossessionPage = ({setPossessions}) => {
+const CreatePossessionPage = ({setPossessions , setPage}) => {
   const [libelle, setLibelle] = useState('');
   const [valeur, setValeur] = useState('');
   const [dateDebut, setDateDebut] = useState('');
@@ -29,6 +29,7 @@ const CreatePossessionPage = ({setPossessions}) => {
       if (libelle != '' && valeur != '' && dateDebut != '' && tauxAmortissement != ''){
         console.log(await axios.post('/possession', { libelle, valeur, dateDebut, tauxAmortissement }));
         fetchPossessions();
+        setPage('possession');
       }
     } catch (err) {
       console.error("Erreur lors de la création de la possession", err);
