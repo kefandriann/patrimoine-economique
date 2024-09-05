@@ -18,7 +18,7 @@ function App  ()  {
     } else if (page === 'create') {
       return <CreatePossessionPage setPossessions={setPossessions} setPage={setPage}/>;
     } else if (page.split("/")[0] === 'update') {
-      return <UpdatePossessionPage libelle1={libelle1} setPossessions={setPossessions}/>;
+      return <UpdatePossessionPage libelle1={libelle1} setPage={setPage}/>;
     }
     return <h1>Bienvenue dans l'application Patrimoine Économique</h1>;
   }

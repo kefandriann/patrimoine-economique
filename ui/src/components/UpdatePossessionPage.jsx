@@ -4,7 +4,7 @@ import axios from 'axios';
 
 axios.defaults.baseURL = 'https://patrimoine-economique-backend-6r4w.onrender.com';
 
-const UpdatePossessionPage = ({ libelle1 }) => {
+const UpdatePossessionPage = ({ libelle1 , setPage }) => {
   const [dateFin, setDateFin] = useState('');
   const [libelle, setLibelle] = useState('');
 
@@ -12,6 +12,7 @@ const UpdatePossessionPage = ({ libelle1 }) => {
     event.preventDefault();
     try {
       await axios.patch(`/possession/${libelle1}`, { libelle, dateFin });
+      setPage('possession');
     } catch (err) {
       console.error("Erreur lors de la mise à jour de la possession", err);
     }
