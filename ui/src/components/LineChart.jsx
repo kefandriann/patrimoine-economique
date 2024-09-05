@@ -6,7 +6,7 @@ import axios from 'axios';
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, LineElement, PointElement, ArcElement, CategoryScale, LinearScale, RadialLinearScale);
 
-axios.defaults.baseURL = 'http://localhost:3000';
+axios.defaults.baseURL = 'https://patrimoine-economique-backend-6r4w.onrender.com';
 
 function LineChart () {
     const options = {

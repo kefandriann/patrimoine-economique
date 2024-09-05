@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Form, Button } from 'react-bootstrap';
 import axios from "axios";
 
-axios.defaults.baseURL = 'http://localhost:3000';
+axios.defaults.baseURL = 'https://patrimoine-economique-backend-6r4w.onrender.com';
 
 function GetValeurPatrimoine () {
     const [date, setDate] = useState('');

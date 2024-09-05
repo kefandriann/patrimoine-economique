@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 
+axios.defaults.baseURL = 'https://patrimoine-economique-backend-6r4w.onrender.com';
+
 const CreatePossessionPage = ({setPossessions}) => {
   const [libelle, setLibelle] = useState('');
   const [valeur, setValeur] = useState('');
